@@ -1,23 +1,35 @@
-// 1. Initialize Map
+// 1. Initialize Map (Zoom level 4 frames the contiguous US on startup)
 const map = L.map('map').setView([39.8283, -98.5795], 4);
 
 // ==========================================
-// BASE MAP LAYERS
+// BASE MAP & OVERLAY LAYERS
 // ==========================================
+// Standard Street Map Layer (OpenStreetMap)
 const streetMap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
-const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+// Satellite Base Imagery Layer (Esri World Imagery)
+const satelliteImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   maxZoom: 19,
   attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 });
 
-satelliteMap.addTo(map);
+// Transparent Street Names, Borders, & City Labels Layer
+const satelliteLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 19,
+  attribution: ''
+});
+
+// Create Hybrid Group (Satellite + Labels combined)
+const hybridMap = L.layerGroup([satelliteImagery, satelliteLabels]);
+
+// Set Hybrid Satellite Map as default layer on startup
+hybridMap.addTo(map);
 
 // ==========================================
-// FEATURE 2: NOAA Radar Overlay Layer
+// FEATURE: Official NOAA Live Radar Overlay
 // ==========================================
 const noaaRadarLayer = L.tileLayer.wms(
   'https://opengeo.ncep.noaa.gov/geoserver/conus/conus_cref_qcd/ows',
@@ -37,7 +49,7 @@ noaaRadarLayer.addTo(map);
 // LAYER CONTROL (BASE MAPS + OVERLAYS)
 // ==========================================
 const baseMaps = {
-  "Satellite": satelliteMap,
+  "Satellite Hybrid": hybridMap,
   "Street Map": streetMap
 };
 
@@ -45,7 +57,6 @@ const overlayMaps = {
   "NOAA Weather Radar": noaaRadarLayer
 };
 
-// Registering as overlay ensures switching base maps leaves radar intact
 L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 // Keep radar on top whenever user changes base map
@@ -125,7 +136,7 @@ function toggleLiveGPS(enable) {
 }
 
 // ==========================================
-// FEATURE 3: NWS Tornado Warnings & Watches
+// FEATURE 2: NWS Tornado Warnings & Watches
 // ==========================================
 function loadNWSAlerts() {
   const nwsUrl = 'https://api.weather.gov/alerts/active?status=actual&message_type=alert';
@@ -142,9 +153,9 @@ function loadNWSAlerts() {
         },
         style: function (feature) {
           const event = feature.properties.event || '';
-          let color = '#d62728'; // Red for Warning
+          let color = '#d62728'; // Red for Tornado Warning
           if (event.includes('Tornado Watch')) {
-            color = '#f1c40f'; // Yellow for Watch
+            color = '#f1c40f'; // Yellow for Tornado Watch
           }
           return { color: color, weight: 2, fillOpacity: 0.35 };
         },
@@ -162,10 +173,11 @@ function loadNWSAlerts() {
     .catch(err => console.error('Error fetching NWS alerts:', err));
 }
 
+// Load NWS severe alerts on startup
 loadNWSAlerts();
 
 // ==========================================
-// FEATURE 4: Destination-Only Click Logic
+// FEATURE 3: Destination-Only Click Logic
 // ==========================================
 map.on('click', function (e) {
   if (!isLiveGpsActive || !startPoint) {
@@ -185,6 +197,9 @@ map.on('click', function (e) {
   fetchRoute(startPoint, [lng, lat]);
 });
 
+// ==========================================
+// FEATURE 4: Route Fetching & Navigation Steps
+// ==========================================
 function fetchRoute(start, end) {
   const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${start.join(',')}&end=${end.join(',')}`;
 
