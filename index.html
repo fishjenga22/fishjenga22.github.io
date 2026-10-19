@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storm Buddy</title>
+
+  <!-- 1. Leaflet CSS -->
+  <link 
+    rel="stylesheet" 
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" 
+  />
+
+  <!-- 2. Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Storm Buddy</h1>
+
+  <!-- Controls Bar with Live GPS Toggle -->
+  <div id="controls">
+    <label class="switch-label">
+      <input type="checkbox" id="gps-toggle" onchange="toggleLiveGPS(this.checked)">
+      <span class="slider"></span>
+      <span class="label-text">📡 Live GPS Tracking</span>
+    </label>
+  </div>
+  
+  <!-- Main Application Wrapper -->
+  <div class="app-container">
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Directions Sidebar -->
+    <div id="directions-panel">
+      <h3>Directions</h3>
+      <div id="summary">Click two points or enable Live GPS to calculate a route.</div>
+      <ol id="instructions-list"></ol>
+    </div>
+  </div>
+
+  <!-- Severe Weather Legend -->
+  <div id="legend">
+    <span class="legend-item"><span class="box tornado-warning"></span> Tornado Warning</span>
+    <span class="legend-item"><span class="box tornado-watch"></span> Tornado Watch</span>
+  </div>
+
+  <!-- 3. Leaflet JavaScript -->
+  <script 
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="">
+  </script>
+
+  <!-- 4. Custom JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
