@@ -1,5 +1,12 @@
-// 1. Initialize Map (Zoom level 4 frames the contiguous US on startup)
-const map = L.map('map').setView([39.8283, -98.5795], 4);
+// 1. Initialize Map with mobile tap handling
+const map = L.map('map', {
+  tap: true
+}).setView([39.8283, -98.5795], 4);
+
+// Recalculate container size on window resize / orientation changes
+window.addEventListener('resize', () => {
+  map.invalidateSize();
+});
 
 // ==========================================
 // BASE MAP & OVERLAY LAYERS
