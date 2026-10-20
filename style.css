@@ -1,15 +1,16 @@
 /* General page styling */
-body {
+html, body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 10px;
   background-color: #f4f4f9;
   text-align: center;
+  box-sizing: border-box;
 }
 
 /* Controls Bar & Toggle Switch */
 #controls {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,32 +25,30 @@ body {
   color: #333;
   cursor: pointer;
   background: #ffffff;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 20px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Hide default checkbox */
 .switch-label input {
   display: none;
 }
 
-/* Custom slider track */
 .slider {
-  width: 40px;
-  height: 22px;
+  width: 42px;
+  height: 24px;
   background-color: #ccc;
   border-radius: 20px;
   position: relative;
   transition: background-color 0.3s;
 }
 
-/* Slider knob */
 .slider::before {
   content: "";
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background-color: white;
   top: 3px;
@@ -57,31 +56,33 @@ body {
   transition: transform 0.3s;
 }
 
-/* Active state when checked */
 .switch-label input:checked + .slider {
-  background-color: #2ca02c; /* Active Green */
+  background-color: #2ca02c;
 }
 
 .switch-label input:checked + .slider::before {
   transform: translateX(18px);
 }
 
-/* Flex layout for Map + Directions */
+/* Application Layout */
 .app-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
   max-width: 1200px;
   margin: 0 auto 10px auto;
 }
 
-/* Map container */
+/* Map Container */
 #map {
   flex: 2;
   height: 550px;
+  min-height: 350px; /* Essential for mobile viewports */
+  width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  touch-action: pan-x pan-y; /* Fixes mobile panning */
 }
 
 /* Directions Panel */
@@ -89,11 +90,12 @@ body {
   flex: 1;
   height: 510px;
   background: #ffffff;
-  padding: 20px;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   text-align: left;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth touch scrolling */
 }
 
 #directions-panel h3 {
@@ -104,8 +106,8 @@ body {
 #summary {
   font-weight: bold;
   color: #555;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
 
@@ -126,7 +128,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 20px;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 15px;
 }
 
@@ -146,16 +148,22 @@ body {
 .tornado-warning { background-color: #d62728; }
 .tornado-watch { background-color: #f1c40f; }
 
-/* Responsive layout for mobile devices */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
+  body {
+    padding: 8px;
+  }
+
   .app-container {
     flex-direction: column;
   }
+
   #map {
-    width: 100%;
-    height: 400px;
+    height: 60vh;
+    min-height: 350px;
   }
+
   #directions-panel {
-    height: 300px;
+    height: 250px;
   }
 }
